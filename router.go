@@ -84,7 +84,7 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 			os.Exit(2)
 		}
 
-		fmt.Printf("Verb: %s\nAuthor: %s\nVersion: %s\nHelp: %s\nUsage: %s\n", cmd.Verb(), cmd.Author(), cmd.Version(), cmd.Help(), cmd.Usage())
+		fmt.Printf("Verb: %s\nAuthor: %s\nVersion: %s\nHelp: %s\nUsage: %s %s\n", cmd.Verb(), cmd.Author(), cmd.Version(), cmd.Help(), cmd.Verb(), cmd.Usage())
 		return nil
 	})
 
