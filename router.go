@@ -45,7 +45,14 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 		}
 
 		if strings.HasSuffix(info.Name(), ".lua") {
-			c := newGluaCommand(r.gluaCreationHook, filepath.Join(r.scriptHome, info.Name()))
+			fname := filepath.Join(r.scriptHome, info.Name())
+			fin, err := os.Open(fname)
+			if err != nil {
+				return err
+			}
+			defer fin.Close()
+
+			c := newGluaCommand(r.gluaCreationHook, fname, fin)
 
 			r.cmds[c.Verb()] = c
 		}

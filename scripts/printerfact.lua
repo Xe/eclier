@@ -1,11 +1,14 @@
+script.verb = "printerfact"
+script.help = "displays useful and informative facts about printers"
+script.author = "Xe"
+script.version = "1.0"
+script.usage = ""
+
 local http = require "http"
 local json = require "json"
 
-script.verb = "printerfact"
-script.help = "displays useful and informative facts about printers"
-
 function run(arg)
-  local resp, err = http.get("https://xena.stdlib.com/printerfacts")
+  local resp, err = http.get "https://xena.stdlib.com/printerfacts"
 
   if err ~= nil then
     error(err)

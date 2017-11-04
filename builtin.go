@@ -9,6 +9,8 @@ import (
 // Constants for built-in commands.
 const (
 	BuiltinScriptPath = "<built-in>"
+	BuiltinAuthor     = "<built-in>"
+	BuiltinVersion    = "<built-in>"
 )
 
 type pluginCommand struct {
@@ -38,6 +40,15 @@ func (p *pluginCommand) Verb() string { return "plugin" }
 func (p *pluginCommand) Help() string {
 	return `plugin lists all of the loaded commands and their script paths.`
 }
+
+func (p *pluginCommand) Usage() string {
+	return `  -no-builtin 
+    	if set, don't show built-in commands`
+}
+
+func (p *pluginCommand) Author() string { return BuiltinAuthor }
+
+func (p *pluginCommand) Version() string { return BuiltinVersion }
 
 // Run executes the command.
 func (p *pluginCommand) Run(ctx context.Context, arg []string) error {

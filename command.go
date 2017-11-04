@@ -11,5 +11,8 @@ type Command interface {
 	ScriptPath() string
 	Verb() string
 	Help() string
+	Usage() string
+	Author() string
+	Version() string
 	Run(ctx context.Context, arg []string) error
 }

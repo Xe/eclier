@@ -3,6 +3,8 @@ package eclier
 import (
 	"context"
 	"errors"
+	"io"
+	"io/ioutil"
 	"sync"
 
 	lua "github.com/yuin/gopher-lua"
@@ -10,8 +12,11 @@ import (
 )
 
 type Script struct {
-	Verb string
-	Help string
+	Verb    string
+	Help    string
+	Usage   string
+	Author  string
+	Version string
 }
 
 type gluaCommand struct {
@@ -22,14 +27,19 @@ type gluaCommand struct {
 	filename string
 }
 
-func newGluaCommand(preload func(*lua.LState), filename string) Command {
+func newGluaCommand(preload func(*lua.LState), filename string, r io.Reader) Command {
 	L := lua.NewState()
 	preload(L)
 
 	script := &Script{}
 	L.SetGlobal("script", luar.New(L, script))
 
-	err := L.DoFile(filename)
+	data, err := ioutil.ReadAll(r)
+	if err != nil {
+		panic(err)
+	}
+
+	err = L.DoString(string(data))
 	if err != nil {
 		panic(err)
 	}
@@ -49,6 +59,12 @@ func (g *gluaCommand) ScriptPath() string { return g.filename }
 func (g *gluaCommand) Verb() string { return g.script.Verb }
 
 func (g *gluaCommand) Help() string { return g.script.Help }
+
+func (g *gluaCommand) Usage() string { return g.script.Usage }
+
+func (g *gluaCommand) Author() string { return g.script.Author }
+
+func (g *gluaCommand) Version() string { return g.script.Version }
 
 func (g *gluaCommand) Run(ctx context.Context, arg []string) error {
 	runf := g.L.GetGlobal("run")
