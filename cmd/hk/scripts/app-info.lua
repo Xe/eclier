@@ -29,7 +29,13 @@ function run(arg)
 
   local app = heroku.app_info(flags.app)
 
-  print("app name: " .. tostring(app.name))
-  print("app url: " .. tostring(app.weburl))
-  print("app created at: " .. app.createdAt:string())
+  print("=== " .. tostring(app.name))
+  print("Auto Cert Mgmt: " .. tostring(app.Acm))
+  print("Git URL:        " .. tostring(app.GitURL))
+  print("Owner:          " .. tostring(app.Owner.Email))
+  print("Region:         " .. tostring(app.Region.Name))
+  print("Repo Size:      " .. tostring(app.RepoSize))
+  print("Slug Size:      " .. tostring(app.SlugSize))
+  print("Stack:          " .. tostring(app.Stack.Name))
+  print("Web URL:        " .. tostring(app.WebURL))
 end
