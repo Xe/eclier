@@ -1,5 +1,7 @@
 # eclier
 
+Pronounced like eclair
+
 The core of a command line application allowing for trivial user extension.
 
 Every command and subcommand is its own `.lua` file that is either shipped as
