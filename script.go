@@ -73,9 +73,20 @@ func (g *gluaCommand) Run(ctx context.Context, arg []string) error {
 		return errors.New("no global function run in this script")
 	}
 
-	return g.L.CallByParam(lua.P{
+	tab := g.L.NewTable()
+
+	for _, a := range arg {
+		tab.Append(lua.LString(a))
+	}
+
+	err := g.L.CallByParam(lua.P{
 		Fn:      runf,
 		NRet:    0,
-		Protect: true,
-	}, luar.New(g.L, arg))
+		Protect: false,
+	}, tab)
+	if err != nil {
+		panic(err)
+	}
+
+	return nil
 }
