@@ -4,15 +4,16 @@ script.author = "Xe"
 script.version = "0.1"
 script.usage = ""
 
+local heroku = require "heroku"
 local question = require "question"
 
 function run()
   local email = question.ask "Heroku Email address: "
   local pass = question.secret "Heroku password (never stored): "
 
-  set_heroku_userpass(email, pass)
+  heroku.set_userpass(email, pass)
 
-  tkn, err = heroku_new_token()
+  tkn, err = heroku.create_token()
   if err ~= nil then
     error(err:error())
   end

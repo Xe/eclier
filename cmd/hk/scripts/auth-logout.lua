@@ -6,5 +6,5 @@ script.usage = ""
 
 function run()
   netrc:removeMachine("api.heroku.com")
-  nertc:removeMachine("git.heroku.com")
+  netrc:removeMachine("git.heroku.com")
 end

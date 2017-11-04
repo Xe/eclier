@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/Xe/eclier"
+	"github.com/Xe/eclier/internal/gluaheroku"
 	"github.com/Xe/x/tools/glue/libs/gluaexpect"
 	"github.com/Xe/x/tools/glue/libs/gluasimplebox"
 	"github.com/ailncode/gluaxmlpath"
@@ -83,25 +83,5 @@ func preload(L *lua.LState) {
 		heroku.DefaultTransport.Password = pass
 	}
 
-	h := heroku.NewService(heroku.DefaultClient)
-
-	L.SetGlobal("set_heroku_userpass", luar.New(L, func(user, pass string) {
-		heroku.DefaultTransport.Username = user
-		heroku.DefaultTransport.Password = pass
-	}))
-	L.SetGlobal("heroku_new_token", luar.New(L, func() (string, error) {
-		description := "hk login from " + time.Now().UTC().Format(time.RFC3339)
-		expires := 2592000 // 30 days
-		opts := heroku.OAuthAuthorizationCreateOpts{
-			Description: &description,
-			ExpiresIn:   &expires,
-		}
-
-		auth, err := h.OAuthAuthorizationCreate(context.Background(), opts)
-		if err != nil {
-			return "", err
-		}
-
-		return auth.AccessToken.Token, nil
-	}))
+	gluaheroku.Preload(L)
 }

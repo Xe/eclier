@@ -18,6 +18,20 @@ func init() {
 var exports = map[string]lua.LGFunction{
 	"set_userpass": setUserPass,
 	"create_token": createToken,
+	"app_info":     appInfo,
+}
+
+func appInfo(L *lua.LState) int {
+	appName := L.ToString(1)
+
+	app, err := s.AppInfo(context.Background(), appName)
+	if err != nil {
+		L.Error(luar.New(L, err.Error()), 1)
+		return 0
+	}
+
+	L.Push(luar.New(L, app))
+	return 1
 }
 
 func createToken(L *lua.LState) int {
