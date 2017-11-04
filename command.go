@@ -2,13 +2,11 @@ package eclier
 
 import (
 	"context"
-	"io"
 )
 
 // Command is an individual subcommand.
 type Command interface {
-	io.Closer
-
+	Close() error
 	Init()
 	ScriptPath() string
 	Verb() string

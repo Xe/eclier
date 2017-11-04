@@ -3,8 +3,10 @@ package eclier
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	lua "github.com/yuin/gopher-lua"
@@ -36,11 +38,31 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 	// scan r.scriptHome for lua scripts, load them into their own lua states and
 	// make a wrapper around them for the Command type.
 
+	err := filepath.Walk(r.scriptHome, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Printf("error in arg: %v", err)
+			return err
+		}
+
+		if strings.HasSuffix(info.Name(), ".lua") {
+			c := newGluaCommand(r.gluaCreationHook, filepath.Join(r.scriptHome, info.Name()))
+
+			r.cmds[c.Verb()] = c
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	r.cmds["plugin"] = &pluginCommand{r: r}
 
 	return r, nil
 }
 
+// Run executes a single command given in slot 0 of the argument array.
 func (r *Router) Run(ctx context.Context, arg []string) error {
 	r.lock.Lock()
 	defer r.lock.Unlock()
