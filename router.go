@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/olekukonko/tablewriter"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -64,7 +65,31 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 		return nil, err
 	}
 
+	var helpCommand Command = NewBuiltinCommand("help", "shows help for subcommands", "[subcommand]", func(ctx context.Context, arg []string) error {
+		if len(arg) == 0 {
+			table := tablewriter.NewWriter(os.Stdout)
+			table.SetHeader([]string{"Verb", "Author", "Version", "Help"})
+
+			for _, cmd := range r.cmds {
+				table.Append([]string{cmd.Verb(), cmd.Author(), cmd.Version(), cmd.Help()})
+			}
+
+			table.Render()
+			return nil
+		}
+
+		cmd, ok := r.cmds[arg[0]]
+		if !ok {
+			fmt.Printf("can't find help for %s", arg[0])
+			os.Exit(2)
+		}
+
+		fmt.Printf("Verb: %s\nAuthor: %s\nVersion: %s\nHelp: %s\nUsage: %s\n", cmd.Verb(), cmd.Author(), cmd.Version(), cmd.Help(), cmd.Usage())
+		return nil
+	})
+
 	r.cmds["plugin"] = &pluginCommand{r: r}
+	r.cmds["help"] = helpCommand
 
 	return r, nil
 }

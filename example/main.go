@@ -34,10 +34,13 @@ func main() {
 
 	flag.Parse()
 
-	r, _ := eclier.NewRouter(
+	r, err := eclier.NewRouter(
 		eclier.WithGluaCreationHook(preload),
 		eclier.WithScriptHome(*scriptHome),
 	)
+	if err != nil {
+		panic(err)
+	}
 
 	r.Run(ctx, flag.Args())
 }
