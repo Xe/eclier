@@ -21,7 +21,7 @@ type Router struct {
 
 	// configured data
 	gluaCreationHook func(*lua.LState)
-	scriptHome       string
+	scriptHomes      []string
 	cartridge        map[string]string
 }
 
@@ -39,30 +39,32 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 	// scan r.scriptHome for lua scripts, load them into their own lua states and
 	// make a wrapper around them for the Command type.
 
-	err := filepath.Walk(r.scriptHome, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			log.Printf("error in arg: %v", err)
-			return err
-		}
-
-		if strings.HasSuffix(info.Name(), ".lua") {
-			fname := filepath.Join(r.scriptHome, info.Name())
-			fin, err := os.Open(fname)
+	for _, home := range r.scriptHomes {
+		err := filepath.Walk(home, func(path string, info os.FileInfo, err error) error {
 			if err != nil {
+				log.Printf("error in arg: %v", err)
 				return err
 			}
-			defer fin.Close()
 
-			c := newGluaCommand(r.gluaCreationHook, fname, fin)
+			if strings.HasSuffix(info.Name(), ".lua") {
+				fname := filepath.Join(r.scriptHome, info.Name())
+				fin, err := os.Open(fname)
+				if err != nil {
+					return err
+				}
+				defer fin.Close()
 
-			r.cmds[c.Verb()] = c
+				c := newGluaCommand(r.gluaCreationHook, fname, fin)
+
+				r.cmds[c.Verb()] = c
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			return nil, err
 		}
-
-		return nil
-	})
-
-	if err != nil {
-		return nil, err
 	}
 
 	var helpCommand Command = NewBuiltinCommand("help", "shows help for subcommands", "[subcommand]", func(ctx context.Context, arg []string) error {
@@ -124,7 +126,7 @@ type RouterOption func(*Router)
 // where lua files will be walked and parsed.
 func WithScriptHome(dir string) RouterOption {
 	return func(r *Router) {
-		r.scriptHome = dir
+		r.scriptHomes = append(r.scriptHomes, dir)
 	}
 }
 
