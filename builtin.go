@@ -34,7 +34,7 @@ func (p *pluginCommand) Init() {
 func (p *pluginCommand) ScriptPath() string { return BuiltinScriptPath }
 
 // Verb returns the command verb.
-func (p *pluginCommand) Verb() string { return "plugin" }
+func (p *pluginCommand) Verb() string { return "plugins" }
 
 // Help returns the command help
 func (p *pluginCommand) Help() string {

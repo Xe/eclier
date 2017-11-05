@@ -88,7 +88,7 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 		return nil
 	})
 
-	r.cmds["plugin"] = &pluginCommand{r: r}
+	r.cmds["plugins"] = &pluginCommand{r: r}
 	r.cmds["help"] = helpCommand
 
 	return r, nil
