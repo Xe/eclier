@@ -1,33 +1,21 @@
-script.verb = "app:info"
-script.help = "looks up information on an application"
+script.verb = "apps:create"
+script.help = "create a new heroku application"
 script.author = "Xe"
 script.version = "0.1"
-script.usage = "[-app app-name]"
+script.usage = "[app-name]"
 
-local flag = require "flag"
 local heroku = require "heroku"
-
-local fs = flag.new()
-
-fs:string("app", "", "application name")
-
-script.usage = fs:usage()
+local question = require "question"
 
 function run(arg)
-  if arg[1] == "-help" or arg[1] == "--help" then
-    print(fs:usage())
-    return
+  local app = ""
+  if #arg == 0 then
+    app = question.ask "app name? (leave blank for auto-generated name) "
+  else
+    app = arg[1]
   end
 
-  arg[0] = script.verb
-  local flags = fs:parse(arg)
-
-  if flags.app == "" then
-    print("-app must be specified")
-    return
-  end
-
-  local app = heroku.app_info(flags.app)
+  local app = heroku.app_create(app)
 
   print("=== " .. tostring(app.name))
   print("Auto Cert Mgmt: " .. tostring(app.Acm))

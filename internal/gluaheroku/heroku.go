@@ -18,6 +18,8 @@ func init() {
 var exports = map[string]lua.LGFunction{
 	"set_userpass": setUserPass,
 	"create_token": createToken,
+	"app_create":   appCreate,
+	"app_destroy":  appDestroy,
 	"app_info":     appInfo,
 }
 
@@ -25,6 +27,38 @@ func appInfo(L *lua.LState) int {
 	appName := L.ToString(1)
 
 	app, err := s.AppInfo(context.Background(), appName)
+	if err != nil {
+		L.Error(luar.New(L, err.Error()), 1)
+		return 0
+	}
+
+	L.Push(luar.New(L, app))
+	return 1
+}
+
+func appCreate(L *lua.LState) int {
+	appName := L.ToString(1)
+
+	var o heroku.AppCreateOpts
+
+	if appName != "" {
+		o.Name = heroku.String(appName)
+	}
+
+	app, err := s.AppCreate(context.Background(), o)
+	if err != nil {
+		L.Error(luar.New(L, err.Error()), 1)
+		return 0
+	}
+
+	L.Push(luar.New(L, app))
+	return 1
+}
+
+func appDestroy(L *lua.LState) int {
+	appName := L.ToString(1)
+
+	app, err := s.AppDelete(context.Background(), appName)
 	if err != nil {
 		L.Error(luar.New(L, err.Error()), 1)
 		return 0

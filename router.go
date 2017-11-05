@@ -54,6 +54,7 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 			defer fin.Close()
 
 			c := newGluaCommand(r.gluaCreationHook, fname, fin)
+			log.Printf("loaded script %s", fname)
 
 			r.cmds[c.Verb()] = c
 		}
