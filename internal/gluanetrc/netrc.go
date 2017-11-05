@@ -21,8 +21,17 @@ func init() {
 }
 
 var exports = map[string]lua.LGFunction{
-	"machine": machine,
-	"save":    save,
+	"machine":       machine,
+	"save":          save,
+	"removeMachine": removeMachine,
+}
+
+func removeMachine(L *lua.LState) int {
+	name := L.ToString(1)
+
+	n.RemoveMachine(name)
+
+	return 0
 }
 
 func machine(L *lua.LState) int {
