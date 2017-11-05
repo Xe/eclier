@@ -1,0 +1,4 @@
+state.json
+dockerswarm-svcd
+*.pem
+.env
