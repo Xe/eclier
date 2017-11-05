@@ -9,6 +9,7 @@ import (
 
 	"github.com/Xe/eclier"
 	"github.com/Xe/eclier/internal/gluaheroku"
+	"github.com/Xe/eclier/internal/gluanetrc"
 	"github.com/Xe/x/tools/glue/libs/gluaexpect"
 	"github.com/Xe/x/tools/glue/libs/gluasimplebox"
 	"github.com/ailncode/gluaxmlpath"
@@ -27,7 +28,6 @@ import (
 	"github.com/yuin/gluare"
 	lua "github.com/yuin/gopher-lua"
 	json "layeh.com/gopher-json"
-	luar "layeh.com/gopher-luar"
 )
 
 var (
@@ -73,8 +73,6 @@ func preload(L *lua.LState) {
 		panic(err)
 	}
 
-	L.SetGlobal("netrc", luar.New(L, n))
-
 	user := n.Machine("api.heroku.com").Get("login")
 	pass := n.Machine("api.heroku.com").Get("password")
 
@@ -84,4 +82,5 @@ func preload(L *lua.LState) {
 	}
 
 	gluaheroku.Preload(L)
+	gluanetrc.Preload(L)
 }

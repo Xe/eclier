@@ -4,6 +4,8 @@ script.author = "Xe"
 script.version = "0.1"
 script.usage = ""
 
+local netrc = require "netrc"
+
 function run()
-  print(netrc:machine("api.heroku.com"):get("login"))
+  print(netrc.machine("api.heroku.com"):get("login"))
 end

@@ -4,6 +4,9 @@ script.author = "Xe"
 script.version = "0.1"
 script.usage = ""
 
+local heroku = require "heroku"
+
 function run()
-  print(netrc:machine("api.heroku.com"):get("password"))
+  local user, pass = heroku.get_userpass()
+  print(pass)
 end

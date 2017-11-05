@@ -4,6 +4,7 @@ script.author = "Xe"
 script.version = "0.1"
 script.usage = ""
 
+local netrc = require "netrc"
 local heroku = require "heroku"
 local question = require "question"
 
@@ -18,12 +19,12 @@ function run()
     error(err:error())
   end
 
-  netrc:machine("api.heroku.com"):set("login", email)
-  netrc:machine("api.heroku.com"):set("password", tkn)
-  netrc:machine("git.heroku.com"):set("login", email)
-  netrc:machine("git.heroku.com"):set("password", tkn)
+  netrc.machine("api.heroku.com"):set("login", email)
+  netrc.machine("api.heroku.com"):set("password", tkn)
+  netrc.machine("git.heroku.com"):set("login", email)
+  netrc.machine("git.heroku.com"):set("password", tkn)
 
-  netrc:save()
+  netrc.save()
 
   print("Credentials saved for " .. email)
 end

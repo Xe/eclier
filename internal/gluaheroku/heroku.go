@@ -16,11 +16,18 @@ func init() {
 }
 
 var exports = map[string]lua.LGFunction{
+	"get_userpass": getUserPass,
 	"set_userpass": setUserPass,
 	"create_token": createToken,
 	"app_create":   appCreate,
 	"app_destroy":  appDestroy,
 	"app_info":     appInfo,
+}
+
+func getUserPass(L *lua.LState) int {
+	L.Push(lua.LString(heroku.DefaultTransport.Username))
+	L.Push(lua.LString(heroku.DefaultTransport.Password))
+	return 2
 }
 
 func appInfo(L *lua.LState) int {
