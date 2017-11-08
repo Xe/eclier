@@ -47,7 +47,7 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 			}
 
 			if strings.HasSuffix(info.Name(), ".lua") {
-				fname := filepath.Join(r.scriptHome, info.Name())
+				fname := filepath.Join(home, info.Name())
 				fin, err := os.Open(fname)
 				if err != nil {
 					return err

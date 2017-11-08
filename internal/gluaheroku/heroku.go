@@ -9,6 +9,10 @@ import (
 	luar "layeh.com/gopher-luar"
 )
 
+const (
+	gitURLSuf = ".git"
+)
+
 var s *heroku.Service
 
 func init() {
@@ -22,6 +26,17 @@ var exports = map[string]lua.LGFunction{
 	"app_create":   appCreate,
 	"app_destroy":  appDestroy,
 	"app_info":     appInfo,
+	"detect_app":   detectApp,
+}
+
+func detectApp(L *lua.LState) int {
+	appName, err := AppFromGitRemote("heroku")
+	if err != nil {
+		L.Error(luar.New(L, err.Error()), 1)
+		return 0
+	}
+	L.Push(lua.LString(appName))
+	return 1
 }
 
 func getUserPass(L *lua.LState) int {
