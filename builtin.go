@@ -3,7 +3,6 @@ package eclier
 import (
 	"context"
 	"flag"
-	"fmt"
 )
 
 // Constants for built-in commands.
@@ -54,14 +53,17 @@ func (p *pluginCommand) Version() string { return BuiltinVersion }
 func (p *pluginCommand) Run(ctx context.Context, arg []string) error {
 	p.fs.Parse(arg)
 
+	table.SetHeader([]String{"Verb", "Path"})
+
 	for _, c := range p.r.cmds {
 		if c.ScriptPath() == BuiltinScriptPath && *p.dontShowBuiltin {
 			continue
 		}
 
-		fmt.Printf("%s\t%s\n", c.Verb(), c.ScriptPath())
+		table.Append([]string{c.Verb(), c.ScriptPath()})
 	}
 
+	table.Render()
 	return nil
 }
 
