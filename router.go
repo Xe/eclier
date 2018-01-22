@@ -68,7 +68,7 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 		}
 	}
 
-	var helpCommand Command = NewBuiltinCommand("help", "shows help for subcommands", "[subcommand]", func(ctx context.Context, arg []string) error {
+	var helpCommand Command = NewBuiltinCommand("help", "shows help for subcommands", "help [subcommand]", func(ctx context.Context, arg []string) error {
 		if len(arg) == 0 {
 			table := tablewriter.NewWriter(os.Stdout)
 			table.SetHeader([]string{"Verb", "Author", "Version", "Help"})
@@ -95,6 +95,14 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 	r.cmds["help"] = helpCommand
 
 	return r, nil
+}
+
+// AddCommand adds a given command instance to the eclier router.
+func (r *Router) AddCommand(cmd Command) {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+
+	r.cmds[cmd.Verb()] = cmd
 }
 
 // Run executes a single command given in slot 0 of the argument array.
