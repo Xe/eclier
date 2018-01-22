@@ -150,7 +150,7 @@ func WithFilesystem(shortName string, fs http.FileSystem) RouterOption {
 		}
 		defer fin.Close()
 
-		childs, err := fin.ReadDir(-1)
+		childs, err := fin.Readdir(-1)
 		if err != nil {
 			log.Fatal(err)
 		}
