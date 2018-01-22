@@ -11,6 +11,7 @@ import (
 
 	"github.com/olekukonko/tablewriter"
 	lua "github.com/yuin/gopher-lua"
+	"layeh.com/asar"
 )
 
 // Router is the main subcommand router for eclier. At a high level what this is
@@ -55,7 +56,6 @@ func NewRouter(opts ...RouterOption) (*Router, error) {
 				defer fin.Close()
 
 				c := newGluaCommand(r.gluaCreationHook, fname, fin)
-
 				r.cmds[c.Verb()] = c
 			}
 
@@ -136,5 +136,37 @@ func WithScriptHome(dir string) RouterOption {
 func WithGluaCreationHook(hook func(*lua.LState)) RouterOption {
 	return func(r *Router) {
 		r.gluaCreationHook = hook
+	}
+}
+
+// WithAsarFile loads an asar file full of lua scripts into this eclier router.
+func WithAsarFile(shortName, fname string) RouterOption {
+	return func(r *Router) {
+		fin, err := os.Open(fname)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer fin.Close()
+
+		e, err := asar.Decode(fin)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err := e.Walk(func(path string, info os.FileInfo, err error) error {
+			if strings.HasSuffix(info.Name(), ".lua") {
+				fname := filepath.Join(shortName, "::", path)
+				fin := e.Find(path)
+				if fin == nil {
+					return nil
+				}
+
+				c = newGluaCommand(r.gluaCreationHook, fname, fin)
+				r.cmds[c.Verb()] = c
+			}
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
