@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -136,6 +137,37 @@ func WithScriptHome(dir string) RouterOption {
 func WithGluaCreationHook(hook func(*lua.LState)) RouterOption {
 	return func(r *Router) {
 		r.gluaCreationHook = hook
+	}
+}
+
+// WithFilesystem loads a http.FileSystem full of lua scripts into this eclier
+// router.
+func WithFilesystem(shortName string, fs http.FileSystem) RouterOption {
+	return func(r *Router) {
+		fin, err := fs.Open("/")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer fin.Close()
+
+		childs, err := fin.ReadDir(-1)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		for _, chl := range childs {
+			if strings.HasSuffix(chl.Name(), ".lua") {
+				fname := filepath.Join(shortName, chl.Name())
+				sFin, err := fs.Open(chl.Name())
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer sFin.Close()
+
+				c := newGluaCommand(r.gluaCreationHook, fname, sFin)
+				r.cmds[c.Verb()] = c
+			}
+		}
 	}
 }
 
