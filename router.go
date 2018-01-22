@@ -153,7 +153,7 @@ func WithAsarFile(shortName, fname string) RouterOption {
 			log.Fatal(err)
 		}
 
-		err := e.Walk(func(path string, info os.FileInfo, err error) error {
+		err = e.Walk(func(path string, info os.FileInfo, err error) error {
 			if strings.HasSuffix(info.Name(), ".lua") {
 				fname := filepath.Join(shortName, "::", path)
 				fin := e.Find(path)
@@ -161,9 +161,11 @@ func WithAsarFile(shortName, fname string) RouterOption {
 					return nil
 				}
 
-				c = newGluaCommand(r.gluaCreationHook, fname, fin)
+				c := newGluaCommand(r.gluaCreationHook, fname, fin.Open())
 				r.cmds[c.Verb()] = c
 			}
+
+			return nil
 		})
 		if err != nil {
 			log.Fatal(err)

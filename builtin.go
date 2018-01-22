@@ -3,6 +3,9 @@ package eclier
 import (
 	"context"
 	"flag"
+	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 // Constants for built-in commands.
@@ -53,7 +56,8 @@ func (p *pluginCommand) Version() string { return BuiltinVersion }
 func (p *pluginCommand) Run(ctx context.Context, arg []string) error {
 	p.fs.Parse(arg)
 
-	table.SetHeader([]String{"Verb", "Path"})
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Verb", "Path"})
 
 	for _, c := range p.r.cmds {
 		if c.ScriptPath() == BuiltinScriptPath && *p.dontShowBuiltin {
