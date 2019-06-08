@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Xe/eclier"
-	"github.com/Xe/eclier/internal/gluaheroku"
-	"github.com/Xe/eclier/internal/gluanetrc"
+	"within.website/eclier"
+	"within.website/eclier/internal/gluaheroku"
+	"within.website/eclier/internal/gluanetrc"
 	"github.com/Xe/x/tools/glue/libs/gluaexpect"
 	"github.com/Xe/x/tools/glue/libs/gluasimplebox"
 	"github.com/ailncode/gluaxmlpath"

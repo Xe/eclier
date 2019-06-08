@@ -1,4 +1,4 @@
-module github.com/Xe/eclier
+module within.website/eclier
 
 require (
 	github.com/ailncode/gluaxmlpath v0.0.0-20161126153117-6ce478ecb4a6

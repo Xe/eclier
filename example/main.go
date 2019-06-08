@@ -5,8 +5,8 @@ import (
 	"flag"
 	"net/http"
 
-	"github.com/Xe/eclier"
-	"github.com/Xe/eclier/internal/gluaflag"
+	"within.website/eclier"
+	"within.website/eclier/internal/gluaflag"
 	"github.com/cjoudrey/gluahttp"
 	"github.com/cjoudrey/gluaurl"
 	"github.com/kohkimakimoto/gluaenv"

@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Xe/eclier/internal/gluaheroku"
+	"within.website/eclier/internal/gluaheroku"
 	"github.com/yuin/gopher-lua"
 )
 
